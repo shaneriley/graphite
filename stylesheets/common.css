@@ -1,0 +1,31 @@
+@import url("./whitespace-reset.css");
+
+body {
+  font: normal 13px Helvetica, Arial, sans-serif;
+  color: #333333; }
+
+canvas {
+  display: block;
+  width: 640px;
+  height: 480px;
+  margin: 20px auto;
+  border: 1px solid #000000; }
+
+table {
+  width: 640px;
+  margin: 20px auto;
+  border-collapse: collapse; }
+th {
+  padding: 3px 5px;
+  text-align: left;
+  color: #ffffff;
+  border: 1px solid #cccccc;
+  background: #333333; }
+td {
+  padding: 3px 5px;
+  border: 1px solid #eeeeee; }
+span.legend {
+  float: left;
+  width: 8px;
+  height: 8px;
+  margin: 3px 5px 0 0; }
