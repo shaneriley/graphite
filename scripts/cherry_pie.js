@@ -1,8 +1,11 @@
-function Draw(canvas) {
+function CherryPie(canvas) {
+  canvas = canvas.length ? canvas[0] : canvas;
+  canvas.width = $(canvas).width();
+  canvas.height = $(canvas).height();
   var r = canvas.getContext("2d");
-  var opts = arguments[1] || {};
+  var opts = arguments[1] || null;
   this.defaults = {
-    fillColor: opts.fillColor || [
+    fillColor: opts || [
       "#006666", "#cccc00", "#009999", "#d8dee6", "#336699"
     ]
   };
