@@ -1,8 +1,8 @@
 $(function() {
   var $canvas = $("canvas");
   var $table = $("table");
-  var colors = ["#336699", "#cccc00", "#d8dee6", "#009999", "#006666"];
-  var draw = new CherryPie($canvas, colors);
+  var colors = ["#006666", "#cccc00", "#009999", "#d8dee6", "#336699"];
+  var draw = new CherryPie($canvas);
   var data = [];
 
   // Load your data into an array

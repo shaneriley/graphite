@@ -11,7 +11,7 @@ To create a new pie chart, create a new instance of Cherry Pie and pass in eithe
 
 `var draw = new CherryPie(element, colors)`
 
-There is a predefined array of colors that are iterated through or you can pass in an optional array of your own colors as a second argument.
+Cherry Pie will generate random pairs of complimentary colors for you or you can pass in an optional array of your own colors as a second argument.
 
 Once you've created a new Cherry Pie canvas, there are two methods available. The first performs the actual drawing of the pie chart. To draw the chart, you must pass in an array of your data to be rendered.
 
