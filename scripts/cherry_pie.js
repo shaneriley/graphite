@@ -132,14 +132,16 @@ function CherryPie(canvas) {
   this.generateColors = function(quantity) {
     var colors = [], color;
     var randomColor = function() {
-      var hex = "#";
+      var hex = "#", n;
       for (var i = 1; i < 4; i++) {
-        hex += Math.floor(Math.random() * 256).toString(16);
+        n = Math.floor(Math.random() * 256).toString(16);
+        if (n.length == 1) { n = "0" + n; }
+        hex += n;
       }
       if (hex === "#ffffff") { randomColor(); }
       return hex;
     };
-    for (var i = 0; i <= quantity; i++) {
+    for (var i = 0; i <= quantity - 1; i++) {
       color = (i % 2 === 0) ? randomColor() : this.complimentaryColor(colors[i - 1]);
       colors.push(color);
     }
