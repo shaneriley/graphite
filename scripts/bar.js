@@ -1,8 +1,12 @@
 $(function() {
   var $canvas = $("canvas");
   var $table = $("table");
-  var colors = ["#006666", "#cccc00", "#009999", "#d8dee6", "#336699"];
-  var draw = new CherryPie($canvas);
+  var options = {
+    colors: ["#006666", "#cccc00", "#009999", "#336699", "#d8dee6"],
+    barPaddingX: 40,
+    barPaddingY: 40
+  };
+  var draw = new CherryPie($canvas, options);
   var data = [];
 
   // Load your data into an array
@@ -11,6 +15,6 @@ $(function() {
       data.push(parseInt($("td:last", this).text(), 10));
     }
   });
-  draw.pie(data);
+  draw.bar(data);
   draw.legend($table);
 });

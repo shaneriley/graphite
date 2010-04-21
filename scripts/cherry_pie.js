@@ -5,7 +5,9 @@ function CherryPie(canvas) {
   var r = canvas.getContext("2d");
   var opts = arguments[1] || null;
   this.defaults = {
-    fillColor: opts || []
+    fillColor: opts.colors || [],
+    barPaddingX: opts.barPaddingX || 40,
+    barPaddingY: opts.barPaddingY || 40
   };
   this.degToRad = function(i) {
     return (Math.PI / 180) * i;
@@ -44,107 +46,103 @@ function CherryPie(canvas) {
     $table.find("tr").each(function(i) {
       if ($("td", this).length) {
         e = $("<span></span>").addClass("legend");
-        e.css("backgroundColor", colors[j]);
+        e.css("backgroundColor", colors[j % colors.length]);
         $("td:first", $(this)).prepend(e);
         j++;
       }
     });
   };
-  this.hexToHsl = function(color) {
-    var h, s;
-    var r = parseInt(color.substring(1, 3), 16) / 255;
-    var g = parseInt(color.substring(3, 5), 16) / 255;
-    var b = parseInt(color.substring(5, 7), 16) / 255;
-    var min = Math.min(r, g, b);
-    var max = Math.max(r, g, b);
-    var del_Max = max - min;
-    var l = (max + min) / 2;
-    var q = function(n) {
-      return (((max - n) / 6) + (del_Max / 2)) / del_Max;
-    };
-
-    if (del_Max === 0) {
-      h = 0;
-      s = 0;
+  this.bar = function(data) {
+    this.data = data;
+    var total = 0, average = 0, increment, y_end;
+    var x_start = this.defaults.barPaddingX + .5;
+    var y_start = canvas.height - this.defaults.barPaddingY;
+    var bar_width = (canvas.width - (this.defaults.barPaddingX * 2)) / data.length;
+    for (var entry in data) {
+      total += data[entry];
     }
-    else {
-      s = (l < 0.5) ? del_Max / (max + min) : del_Max / (2 - max - min);
-      var del_R = q(r);
-      var del_G = q(g);
-      var del_B = q(b);
-      if (r === max) { h = del_B - del_G; }
-      else if (g === max) { h = (1 / 3) + del_R - del_B; }
-      else if (b === max) { h = (2 / 3) + del_G - del_R; }
-
-      if (h < 0) { h += 1; }
-      if (h > 1) { h -= 1; }
+    data.sort(function(a,b) {
+      return b - a;
+    });
+    increment = (canvas.height - (this.defaults.barPaddingY * 2)) / data[0];
+    this.drawAxes();
+    this.barLabels(data[0], 4);
+    for (var entry in data) {
+      y_end = (data[entry] * increment);
+      r.beginPath();
+      r.strokeStyle = "#222222";
+      r.strokeRect(x_start, y_start, bar_width, -y_end);
+      r.fillStyle = this.defaults.fillColor[entry % this.defaults.fillColor.length];
+      r.fillRect(x_start, y_start, bar_width, -y_end);
+      x_start += bar_width;
     }
-    var hsl = {
-      hue: h,
-      sat: s,
-      lum: l
-    };
-    return hsl;
+    average = total / data.length;
+    var avg_y = (canvas.height - this.defaults.barPaddingY) - (average * increment);
+    this.drawAverage(avg_y);
   };
-  this.hslToHex = function(hsl) {
-    var h = hsl.hue;
-    var s = hsl.sat;
-    var l = hsl.lum;
-    var r, g, b, var_1, var_2;
-    var toHex = function(n) {
-      n = Math.round(n).toString(16);
-      if (n.length == 1) n = "0" + n;
-      return n;
-    };
-    if (s === 0) {
-      r = l * 255;
-      g = l * 255;
-      b = l * 255;
+  this.barLabels = function(max, steps) {
+    var height = canvas.height - this.defaults.barPaddingY * 2;
+    var increment = height / steps;
+    var label = max / steps;
+    var x_max = canvas.width - this.defaults.barPaddingX;
+    r.beginPath();
+    r.strokeStyle = "#cccccc";
+    r.textBaseline = "middle"
+    r.font = "normal 12px Arial, Helvetica, sans-serif";
+    r.textAlign = "right";
+    var y_pos = this.defaults.barPaddingY + height;
+    for (var i = 0; i <= steps; i++) {
+      r.fillText(label * i, this.defaults.barPaddingX - 5, y_pos);
+      r.moveTo(this.defaults.barPaddingX - 2, y_pos + .5);
+      r.lineTo(x_max, y_pos + .5);
+      r.stroke();
+      y_pos -= increment;
     }
-    else {
-      var_2 = (l < 0.5) ? l * (1 + s) : (l + s) - (s * l);
-      var_1 = 2 * l - var_2;
-      r = 255 * this.hueToRgb(var_1, var_2, h + (1 / 3));
-      g = 255 * this.hueToRgb(var_1, var_2, h);
-      b = 255 * this.hueToRgb(var_1, var_2, h - (1 / 3));
+  };
+  this.drawAverage = function(avg_y) {
+    if (avg_y % 1 === 0) {
+      avg_y += .5;
     }
-    r = toHex(r);
-    g = toHex(g);
-    b = toHex(b);
-    var hex = "#" + r + g + b;
-    return hex;
+    r.beginPath();
+    r.strokeStyle = "#ff0000";
+    r.moveTo(this.defaults.barPaddingX + .5, avg_y);
+    r.lineTo((canvas.width - this.defaults.barPaddingX), avg_y);
+    r.stroke();
+    r.beginPath();
+    r.fillStyle = "#000000";
+    r.font = "normal 11px Arial, Helvetica, sans-serif"
+    r.textAlign = "left";
+    r.fillText("Avg.", (canvas.width - (this.defaults.barPaddingX - 2)), avg_y);
   };
-  this.hueToRgb = function(v1, v2, vH)
-  {
-    if (vH < 0) { vH += 1; }
-    if (vH > 1) { vH -= 1; }
-    if ((6 * vH) < 1) { return (v1 + (v2 - v1) * 6 * vH); }
-    if ((2 * vH) < 1) { return v2; }
-    if ((3 * vH) < 2) { return (v1 + (v2 - v1) * ((2 / 3) - vH) * 6); }
-    return v1;
+  this.drawAxes = function() {
+    var x = this.defaults.barPaddingX + .5;
+    var y = canvas.height - (this.defaults.barPaddingY - .5);
+    var width = canvas.width - (this.defaults.barPaddingX - .5);
+    var height = this.defaults.barPaddingY + .5;
+    r.beginPath();
+    r.strokeStyle = "#000000";
+    r.moveTo(width, y);
+    r.lineTo(x, y);
+    r.lineTo(x, height);
+    r.stroke();
   };
-  this.complimentaryColor = function(original) {
-    var hsl = this.hexToHsl(original);
-    hsl.hue = hsl.hue * 360;
-    (hsl.hue < 180) ? hsl.hue = (hsl.hue + 180) / 360 : (hsl.hue - 180) / 360;
-    return this.hslToHex(hsl);
-  };
-  this.generateColors = function(quantity) {
-    var colors = [], color;
-    var randomColor = function() {
-      var hex = "#", n;
-      for (var i = 1; i < 4; i++) {
-        n = Math.floor(Math.random() * 256).toString(16);
-        if (n.length == 1) { n = "0" + n; }
-        hex += n;
-      }
-      if (hex === "#ffffff") { randomColor(); }
-      return hex;
-    };
-    for (var i = 0; i <= quantity - 1; i++) {
-      color = (i % 2 === 0) ? randomColor() : this.complimentaryColor(colors[i - 1]);
-      colors.push(color);
+  this.drawGrid = function() {
+    var x_space = arguments[0] || 20;
+    var y_space = arguments[1] || 20;
+    var x_length = canvas.height - this.defaults.barPaddingX;
+    var y_length = canvas.width - this.defaults.barPaddingY;
+    r.strokeStyle = "#e0e0e0";
+    r.beginPath();
+    for (var i = this.defaults.barPaddingX, j = x_length - y_space; i <= j; i += y_space) {
+      r.moveTo(this.defaults.barPaddingX, (i + .5));
+      r.lineTo(y_length, (i + .5));
     }
-    return colors;
+    r.stroke();
+    r.beginPath();
+    for (var i = this.defaults.barPaddingY + x_space, j = y_length; i <= j; i += x_space) {
+      r.moveTo((i + .5), this.defaults.barPaddingY + .5);
+      r.lineTo((i + .5), x_length);
+    }
+    r.stroke();
   };
 }
