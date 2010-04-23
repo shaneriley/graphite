@@ -14,8 +14,11 @@ Options is an object that includes an array of hex colors, horizontal and vertic
 `var options = {
   colors: ["#006666", "#cccc00", "#009999", "#336699", "#d8dee6"],
   barPaddingX: 40,
-  barPaddingY: 40
+  barPaddingY: 40,
+  order: "asc"
 };`
+
+barPaddingX and barPaddingY are the spacing, in pixels, that a bar or line graph will leave from the axes to the edge of the canvas. order is an optional string to specify drawing order. Valid values are "asc", "ascend", "ascending", "desc", "descend", "descending".
 
 When drawing a pie chart, Cherry Pie assumes the entire canvas is to be used for the pie chart, and will determine width and height by either CSS or HTML attributes.
 
@@ -23,9 +26,10 @@ To draw the pie chart, you must pass in an array of your data to be rendered.
 
 `draw.pie(data)`
 
-To draw a bar chart, the same array is passed in to the bar method.
+To draw a bar or line chart, the same array is passed in to the bar or line method.
 
 `draw.bar(data)`
+`draw.line(data)`
 
 The legend method creates the legend color swatches. Currently, you need to pass in a table as a jQuery object for this to work. A span with the class of indicator is prepended to the first td of each tr. Each span is given the background color of the corresponding pie slice. Note that you will either need to create your own CSS to style the spans or copy it from the examples.
 
