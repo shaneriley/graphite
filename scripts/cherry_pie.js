@@ -1,4 +1,4 @@
-function CherryPie(canvas) {
+function Graphite(canvas) {
   canvas = canvas.length ? canvas[0] : canvas;
   canvas.width = $(canvas).width();
   canvas.height = $(canvas).height();

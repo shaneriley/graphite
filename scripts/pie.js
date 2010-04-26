@@ -4,7 +4,7 @@ $(function() {
   var options = {
     colors: ["#006666", "#cccc00", "#009999", "#336699", "#d8dee6"]
   };
-  var draw = new CherryPie($canvas, options);
+  var draw = new Graphite($canvas, options);
   var data = [];
 
   // Load your data into an array

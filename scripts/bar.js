@@ -6,7 +6,7 @@ $(function() {
     barPaddingX: 40,
     barPaddingY: 40
   };
-  var draw = new CherryPie($canvas, options);
+  var draw = new Graphite($canvas, options);
   var data = [];
 
   // Load your data into an array
