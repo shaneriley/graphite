@@ -11,16 +11,11 @@ To create a new chart, create a new instance of Graphite and pass in either a DO
 
 Options is an object that includes an array of hex colors, horizontal and vertical padding for bar charts. An exmple of the options object with all possible options:
 
-`var options = {
-
-  colors: ["#006666", "#cccc00", "#009999", "#336699", "#d8dee6"],
-
-  barPaddingX: 40,
-
-  barPaddingY: 40,
-
-  order: "asc"
-
+`var options = {  
+  colors: ["#006666", "#cccc00", "#009999", "#336699", "#d8dee6"],  
+  barPaddingX: 40,  
+  barPaddingY: 40,  
+  order: "asc"  
 };`
 
 barPaddingX and barPaddingY are the spacing, in pixels, that a bar or line graph will leave from the axes to the edge of the canvas. order is an optional string to specify drawing order. Valid values are "asc", "ascend", "ascending", "desc", "descend", "descending".
